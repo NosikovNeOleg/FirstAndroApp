@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         Button buttonBack = (Button)findViewById(R.id.button);
         buttonBack.setOnClickListener(this);
-
+        overridePendingTransition(0,0);
 
         editTextTextCity = findViewById(R.id.editTextTextCity);
         buttonForWeather = findViewById(R.id.buttonForWeather);
@@ -126,14 +126,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 try {
                     JSONObject jsonText = new JSONObject(result);
-                    double weather = jsonText.getJSONObject("main").getDouble("temp");
-                    resultWeather.setText(("" +jsonText.getJSONObject("main").getDouble("temp")).substring(0, 2));
+                    String weather = (("" +jsonText.getJSONObject("main").getDouble("temp")).substring(0, 2));
+                    double check = jsonText.getJSONObject("main").getDouble("temp");
+                    if (weather.substring(0,1) != "-"){
+                        weather = "+" + weather;
+                    }
+                    resultWeather.setText(weather);
                     resultWeather.setTextSize(100);
-                    if (weather > 25){
+                    if (check > 25){
+
                         Drawable draw = getResources().getDrawable(R.drawable.bg_hot);
                         bg.setBackground(draw);
                     }
-
+                    if (check < 25){
+                        if(check > 15) {
+                            Drawable draw = getResources().getDrawable(R.drawable.bg_neutral);
+                            bg.setBackground(draw);
+                        }
+                    }
+                    if (check < -15){
+                        Drawable draw = getResources().getDrawable(R.drawable.bg_cold);
+                        bg.setBackground(draw);
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -144,7 +158,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     public void onClick(View view) {
-        Intent intent = new Intent(MainActivity.this, ClothesActivity.class);
+        Intent intent = new Intent(this, ClothesActivity.class);
+        CharSequence weather = resultWeather.getText();
+        intent.putExtra("weather", weather);
         startActivity(intent);
     }
 

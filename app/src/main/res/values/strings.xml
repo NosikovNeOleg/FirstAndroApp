@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">FirstTest</string>
     <string name="alertCity">Введите название города</string>
+    <string name="MainText">Погода в Вашем городе</string>
+    <string name="TypeYourCity">Введите название города</string>
+    <string name="CheckWeather">Узнать погоду</string>
+    <string name="WhatIshouldToWear">Что мне надеть</string>
 </resources>
