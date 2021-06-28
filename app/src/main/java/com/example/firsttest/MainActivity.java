@@ -1,7 +1,7 @@
 package com.example.firsttest;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -32,9 +32,14 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private EditText editTextTextCity;
-    private Button buttonForWeather;
+    private TextView AboutMe;
     private TextView resultWeather;
-    private TextView bg;
+    private TextView DeskWeather;
+    private Button button;
+    private Button buttonForWeather;
+    private Button buttonForMore;
+    private ConstraintLayout constraintLayout;
+
 
 
     @Override
@@ -48,11 +53,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editTextTextCity = findViewById(R.id.editTextTextCity);
         buttonForWeather = findViewById(R.id.buttonForWeather);
         resultWeather = findViewById(R.id.resultWeather);
-        bg = findViewById(R.id.bg);
+        DeskWeather = findViewById(R.id.DeskWeather);
+        button = findViewById(R.id.button);
+        constraintLayout = findViewById(R.id.constraintLayout);
+        AboutMe = findViewById(R.id.AboutMe);
+        buttonForMore = findViewById(R.id.buttonForMore);
 
+        AboutMe.setOnClickListener(new View.OnClickListener()                   //переключение на активити с информацией о разработчике
+        {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AboutMe.class);
+                startActivity(intent);
+            }
+        });
+        buttonForMore.setOnClickListener(new View.OnClickListener()              //переключение на активити с подробной погодой
+        {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, MoreWeather.class);
+                // здесь передавать в активити подробные данные из апи
+                startActivity(intent);
+            }
+        });
 
-
-        buttonForWeather.setOnClickListener(new View.OnClickListener() {
+        buttonForWeather.setOnClickListener(new View.OnClickListener()          //кнопка для погоды
+        {
             @Override
             public void onClick(View view) {
                 if(editTextTextCity.getText().toString().trim().equals("")){
@@ -61,8 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 else{
                     String city = editTextTextCity.getText().toString();
                     String api_key = "ea6f0e578383b90c05d2a363c4e39c3e";
-                    String url = "https://api.openweathermap.org/data/2.5/weather?q="+ city + "&appid=" + api_key;
-
+                    String url = "https://api.openweathermap.org/data/2.5/weather?q="+ city + "&lang=ru&units=metric&appid=" + api_key;
                     new GetWeather().execute(url);
 
 
@@ -125,28 +150,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 super.onPostExecute(result);
 
                 try {
-                    JSONObject jsonText = new JSONObject(result);
-                    String weather = (("" +jsonText.getJSONObject("main").getDouble("temp")).substring(0, 2));
+                    JSONObject jsonText = new JSONObject(result);       //здесь нужно будет достать больше данных
+                    String weather = (("" + jsonText.getJSONObject("main").getDouble("temp")).substring(0, 2));
+                    String description = jsonText.getJSONArray("weather").getString(0);
+                    int fromDesk1 = description.indexOf("description");
+                    int fromDesk2 = description.indexOf("icon");
+                    description = description.substring(fromDesk1 + 14,fromDesk2 - 3);
                     double check = jsonText.getJSONObject("main").getDouble("temp");
+
                     if (weather.substring(0,1) != "-"){
                         weather = "+" + weather;
                     }
                     resultWeather.setText(weather);
                     resultWeather.setTextSize(100);
+                    DeskWeather.setText(description);
+                    button.setVisibility(View.VISIBLE);
+                    buttonForMore.setVisibility(View.VISIBLE);
                     if (check > 25){
-
                         Drawable draw = getResources().getDrawable(R.drawable.bg_hot);
-                        bg.setBackground(draw);
+                        constraintLayout.setBackground(draw);
                     }
-                    if (check < 25){
-                        if(check > 15) {
-                            Drawable draw = getResources().getDrawable(R.drawable.bg_neutral);
-                            bg.setBackground(draw);
-                        }
+                    else if (check < 25 | check > 5) {
+                        Drawable draw = getResources().getDrawable(R.drawable.bg_neutral);
+                        constraintLayout.setBackground(draw);
                     }
-                    if (check < -15){
+                    if (check < 5){
                         Drawable draw = getResources().getDrawable(R.drawable.bg_cold);
-                        bg.setBackground(draw);
+                        constraintLayout.setBackground(draw);
                     }
 
                 } catch (JSONException e) {
@@ -158,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     public void onClick(View view) {
-        Intent intent = new Intent(this, ClothesActivity.class);
+        Intent intent = new Intent(this, ClothesActivity.class);    //кнопка переключения на активити с одеждой
         CharSequence weather = resultWeather.getText();
         intent.putExtra("weather", weather);
         startActivity(intent);
@@ -166,6 +196,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
+
 
 
 

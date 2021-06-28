@@ -5,4 +5,6 @@
     <string name="TypeYourCity">Введите название города</string>
     <string name="CheckWeather">Узнать погоду</string>
     <string name="WhatIshouldToWear">Что мне надеть</string>
+    <string name="AboutMe">Разработчик - Носов Иван\nВ рамках программы Сетевого ИТ-Университета \n«Разработка мобильных приложений под платформу Android»</string>
+    <string name="more">Подробная погода</string>
 </resources>
