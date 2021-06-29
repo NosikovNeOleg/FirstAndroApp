@@ -8,13 +8,16 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.webkit.ConsoleMessage;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,12 +25,22 @@ import org.json.JSONObject;
 
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -40,6 +53,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button buttonForMore;
     private ConstraintLayout constraintLayout;
 
+     private void initRetrofit() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new IntEx())
+                .build();
+
+        Retrofit retrofit = (new Retrofit.Builder())
+                .baseUrl("https://api.openweathermap.org/data/2.5/")
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .client(client)
+                .build();
+
+        RetrofitService service = retrofit.create(RetrofitService.class);
+
+
+         service.weather(/*"perm","ea6f0e578383b90c05d2a363c4e39c3e"*/).enqueue(new Callback<AboutWeather>() {
+            @Override
+            public void onResponse(Call<AboutWeather> call, Response<AboutWeather> response) {
+                response.body();
+                Log.d("this_is_tag", "Вызов");
+            }
+            @Override
+            public void onFailure(Call<AboutWeather> call, Throwable t) {
+                Log.d(getClass().toString(), t.getMessage());
+            }
+
+        });
+
+
+    };
 
 
     @Override
@@ -59,6 +101,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AboutMe = findViewById(R.id.AboutMe);
         buttonForMore = findViewById(R.id.buttonForMore);
 
+
+
+
+
+
         AboutMe.setOnClickListener(new View.OnClickListener()                   //переключение на активити с информацией о разработчике
         {
             @Override
@@ -74,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(MainActivity.this, MoreWeather.class);
                 // здесь передавать в активити подробные данные из апи
                 startActivity(intent);
+
             }
         });
 
@@ -83,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View view) {
                 if(editTextTextCity.getText().toString().trim().equals("")){
                     Toast.makeText(MainActivity.this, R.string.alertCity, Toast.LENGTH_LONG).show();
+                    initRetrofit();
                 }
                 else{
                     String city = editTextTextCity.getText().toString();
@@ -94,6 +143,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+
+
 
     }
 
@@ -194,8 +245,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
+};
 
-    }
+
 
 
 
