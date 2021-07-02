@@ -1,12 +1,9 @@
 package com.example.firsttest;
 
-
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class AboutWeather {
-
-    }
-
-
+public class Weather {
+    public String description;
+}

@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.webkit.ConsoleMessage;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,7 +24,6 @@ import org.json.JSONObject;
 
 
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,8 +37,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import room.db.CitiesDB;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -52,8 +51,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button buttonForWeather;
     private Button buttonForMore;
     private ConstraintLayout constraintLayout;
+    private CitiesDB INSTANCE;
 
-     private void initRetrofit() {
+    private void initRetrofit() {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new IntEx())
                 .build();
@@ -67,21 +67,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RetrofitService service = retrofit.create(RetrofitService.class);
 
 
-         service.weather(/*"perm","ea6f0e578383b90c05d2a363c4e39c3e"*/).enqueue(new Callback<AboutWeather>() {
+         service.weather(/*"perm",ea6f0e578383b90c05d2a363c4e39c3e"*/).enqueue(new Callback<AllWeather>() {
             @Override
-            public void onResponse(Call<AboutWeather> call, Response<AboutWeather> response) {
+            public void onResponse(Call<AllWeather> call, Response<AllWeather> response) {
                 response.body();
-                Log.d("this_is_tag", "Вызов");
+                Log.d("this_is_tag", new Gson().toJson(response.body()));
             }
             @Override
-            public void onFailure(Call<AboutWeather> call, Throwable t) {
+            public void onFailure(Call<AllWeather> call, Throwable t) {
                 Log.d(getClass().toString(), t.getMessage());
+                Log.d("this_is_tag", "Ошибка");
             }
 
         });
 
 
     };
+
 
 
     @Override
@@ -92,15 +94,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonBack.setOnClickListener(this);
         overridePendingTransition(0,0);
 
+
         editTextTextCity = findViewById(R.id.editTextTextCity);
         buttonForWeather = findViewById(R.id.buttonForWeather);
         resultWeather = findViewById(R.id.resultWeather);
         DeskWeather = findViewById(R.id.DeskWeather);
-        button = findViewById(R.id.button);
         constraintLayout = findViewById(R.id.constraintLayout);
         AboutMe = findViewById(R.id.AboutMe);
         buttonForMore = findViewById(R.id.buttonForMore);
-
 
 
 
@@ -110,8 +111,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AboutMe.class);
+                Intent intent = new Intent(MainActivity.this, AboutMeActivity.class);
                 startActivity(intent);
+
             }
         });
         buttonForMore.setOnClickListener(new View.OnClickListener()              //переключение на активити с подробной погодой
@@ -125,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+
         buttonForWeather.setOnClickListener(new View.OnClickListener()          //кнопка для погоды
         {
             @Override
@@ -132,22 +135,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(editTextTextCity.getText().toString().trim().equals("")){
                     Toast.makeText(MainActivity.this, R.string.alertCity, Toast.LENGTH_LONG).show();
                     initRetrofit();
+
                 }
                 else{
                     String city = editTextTextCity.getText().toString();
                     String api_key = "ea6f0e578383b90c05d2a363c4e39c3e";
                     String url = "https://api.openweathermap.org/data/2.5/weather?q="+ city + "&lang=ru&units=metric&appid=" + api_key;
                     new GetWeather().execute(url);
-
-
                 }
             }
         });
-
-
-
     }
-
 
 
     private class GetWeather extends AsyncTask<String, String, String>{

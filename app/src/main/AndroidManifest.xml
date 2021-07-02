@@ -19,7 +19,7 @@
         </service>
 
         <activity android:name=".MoreWeather" />
-        <activity android:name=".AboutMe" />
+        <activity android:name=".AboutMeActvity" />
         <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
