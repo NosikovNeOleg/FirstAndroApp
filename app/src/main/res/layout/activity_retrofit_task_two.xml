@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg"
+    android:orientation="vertical"
+    tools:context=".RetrofitTaskTwoActivity">
+
+    <Button
+        android:id="@+id/button_first"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/first" />
+
+    <Button
+        android:id="@+id/button_second"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/second" />
+
+    <Button
+        android:id="@+id/button_third"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/third" />
+
+    <Button
+        android:id="@+id/button_fourth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/fourth" />
+
+    <Button
+        android:id="@+id/button_five"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/five" />
+
+    <Button
+        android:id="@+id/button_six"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/six" />
+
+    <Button
+        android:id="@+id/button_seven"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/seven" />
+
+    <Button
+        android:id="@+id/button_eight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/eight" />
+
+    <Button
+        android:id="@+id/button_nine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/nine" />
+
+    <Button
+        android:id="@+id/button_ten"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/ten" />
+
+
+
+    <TextView
+        android:id="@+id/textView_retrofit"
+        android:layout_width="match_parent"
+        android:layout_height="101dp"
+        android:layout_weight="1"
+        android:text=""
+        android:gravity="center|center_horizontal"
+        android:textSize="20dp" />
+
+</LinearLayout>
+
+

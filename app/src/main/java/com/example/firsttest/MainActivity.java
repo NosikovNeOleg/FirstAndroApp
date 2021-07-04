@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.firsttest.RetrofitForWeather.AllWeather;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -30,7 +31,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button buttonForWeather;
     private Button buttonForMore;
     private ConstraintLayout constraintLayout;
-    private CitiesDB INSTANCE;
+    private Button buttonHomeTask;
 
     private void initRetrofit() {
         OkHttpClient client = new OkHttpClient.Builder()
@@ -102,9 +102,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         constraintLayout = findViewById(R.id.constraintLayout);
         AboutMe = findViewById(R.id.AboutMe);
         buttonForMore = findViewById(R.id.buttonForMore);
+        buttonHomeTask = findViewById(R.id.buttonHomeTask);
 
+        buttonHomeTask.setOnClickListener(new View.OnClickListener()                   //переключение на активити с информацией о разработчике
+        {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, RetrofitTaskTwoActivity.class);
+                startActivity(intent);
 
-
+            }
+        });
 
 
         AboutMe.setOnClickListener(new View.OnClickListener()                   //переключение на активити с информацией о разработчике

@@ -7,4 +7,18 @@
     <string name="WhatIshouldToWear">Что мне надеть</string>
     <string name="AboutMe">Разработчик - Носов Иван\nВ рамках программы Сетевого ИТ-Университета \n«Разработка мобильных приложений под платформу Android»</string>
     <string name="more">Подробная погода</string>
+    
+    Retrofit_Task_Two
+    <string name="first">GET LIST USERS</string>
+    <string name="second">GET SINGLE USER</string>
+    <string name="third">GET SINGLE USER NOT FOUND</string>
+    <string name="fourth">GET LIST RESOURCE</string>
+    <string name="five">GET SINGLE RESOURCE</string>
+    <string name="six">GET SINGLE RESOURCE NOT FOUND</string>
+    <string name="seven">POST CREATE</string>
+    <string name="eight">PUT UPDATE</string>
+    <string name="nine">PATCH UPDATE</string>
+    <string name="ten">DELETE LIST USERS</string>
+
+
 </resources>

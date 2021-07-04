@@ -1,4 +1,4 @@
-package com.example.firsttest;
+package com.example.firsttest.RetrofitForWeather;
 
 import com.google.gson.annotations.SerializedName;
 
