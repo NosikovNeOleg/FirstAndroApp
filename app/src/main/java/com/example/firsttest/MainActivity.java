@@ -2,8 +2,8 @@ package com.example.firsttest;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.room.Room;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -16,22 +16,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.firsttest.CustomView.CustomViewFreeDots;
 import com.example.firsttest.RetrofitForWeather.AllWeather;
+import com.example.firsttest.db.WeatherDB;
+import com.example.firsttest.db.WeatherRoom;
+import com.example.firsttest.db.WeatherRoomDao;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.util.List;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
+import io.reactivex.Completable;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,21 +43,23 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import room.db.CitiesDB;
+public class MainActivity extends AppCompatActivity {
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+    //////////////////////////////////////////room db
+    private WeatherDB WeatherDB;
+    /////////////////////////////////////////
 
     private EditText editTextTextCity;
-    private TextView AboutMe;
+    private CustomViewFreeDots AboutMe;
     private TextView resultWeather;
     private TextView DeskWeather;
-    private Button button;
+    private Button buttonForClothes;
     private Button buttonForWeather;
     private Button buttonForMore;
     private ConstraintLayout constraintLayout;
     private Button buttonHomeTask;
 
-    private void initRetrofit() {
+    public RetrofitService initRetrofit() {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new IntEx())
                 .build();
@@ -65,35 +71,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .build();
 
         RetrofitService service = retrofit.create(RetrofitService.class);
-
-
-         service.weather(/*"perm",ea6f0e578383b90c05d2a363c4e39c3e"*/).enqueue(new Callback<AllWeather>() {
-            @Override
-            public void onResponse(Call<AllWeather> call, Response<AllWeather> response) {
-                response.body();
-                Log.d("this_is_tag", new Gson().toJson(response.body()));
-            }
-            @Override
-            public void onFailure(Call<AllWeather> call, Throwable t) {
-                Log.d(getClass().toString(), t.getMessage());
-                Log.d("this_is_tag", "Ошибка");
-            }
-
-        });
-
-
-    };
-
-
+        return service;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button buttonBack = (Button)findViewById(R.id.button);
-        buttonBack.setOnClickListener(this);
-        overridePendingTransition(0,0);
+        overridePendingTransition(0, 0);
 
+//////////
+        WeatherDB = App.getInstance().getDatabaseInstance();
+
+        /////////////////
 
         editTextTextCity = findViewById(R.id.editTextTextCity);
         buttonForWeather = findViewById(R.id.buttonForWeather);
@@ -103,8 +93,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AboutMe = findViewById(R.id.AboutMe);
         buttonForMore = findViewById(R.id.buttonForMore);
         buttonHomeTask = findViewById(R.id.buttonHomeTask);
+        buttonForClothes = findViewById(R.id.buttonForClothes);
 
-        buttonHomeTask.setOnClickListener(new View.OnClickListener()                   //переключение на активити с информацией о разработчике
+
+
+        buttonForClothes.setOnClickListener(new View.OnClickListener() {                //кнопка переключения на активити с одеждой
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ClothesActivity.class);
+                String weather = (String) resultWeather.getText();
+                intent.putExtra("weather", weather);
+                startActivity(intent);
+            }
+        });
+
+        buttonHomeTask.setOnClickListener(new View.OnClickListener()                   //переключение на активити с задачами по ретрофиту
         {
             @Override
             public void onClick(View view) {
@@ -115,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
 
-        AboutMe.setOnClickListener(new View.OnClickListener()                   //переключение на активити с информацией о разработчике
+        AboutMe.setOnClickListener(new View.OnClickListener()                   //переключение на активити с задачами по ретрофиту
         {
             @Override
             public void onClick(View view) {
@@ -124,6 +127,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+
+
         buttonForMore.setOnClickListener(new View.OnClickListener()              //переключение на активити с подробной погодой
         {
             @Override
@@ -140,118 +145,102 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             @Override
             public void onClick(View view) {
-                if(editTextTextCity.getText().toString().trim().equals("")){
-                    Toast.makeText(MainActivity.this, R.string.alertCity, Toast.LENGTH_LONG).show();
-                    initRetrofit();
+                if (editTextTextCity.getText().toString().trim().equals("")) {
+                    Toast.makeText(MainActivity.this, R.string.alertCity, Toast.LENGTH_SHORT).show();
 
-                }
-                else{
+                } else {
                     String city = editTextTextCity.getText().toString();
-                    String api_key = "ea6f0e578383b90c05d2a363c4e39c3e";
-                    String url = "https://api.openweathermap.org/data/2.5/weather?q="+ city + "&lang=ru&units=metric&appid=" + api_key;
-                    new GetWeather().execute(url);
+                    RetrofitService service = initRetrofit();
+                    service.weather(/*city,ea6f0e578383b90c05d2a363c4e39c3e"*/).enqueue(new Callback<AllWeather>() {
+                        @Override
+                        public void onResponse(Call<AllWeather> call, Response<AllWeather> response) {
+                            response.body();
+                            try {
+                                JSONObject result = new JSONObject(new Gson().toJson(response.body()));
+                                JSONObject resultWeatherFromJson = result.getJSONObject("main");
+                                String toView = resultWeatherFromJson.getString("temp");
+                                toView = toView.substring(0,toView.indexOf("."));
+
+                                JSONArray resultDescription = result.getJSONArray("weather");
+                                JSONObject resultDescription2 = resultDescription.getJSONObject(0);
+                                String Description = resultDescription2.getString("description");
+
+
+                                DeskWeather.setText(Description);
+                                buttonForClothes.setVisibility(View.VISIBLE);
+                                buttonForMore.setVisibility(View.VISIBLE);
+
+                                if (toView.substring(0,1) != "-"){
+                                    toView = "+" + toView;
+                                }
+                                resultWeather.setText(toView) ;
+
+                                double check = Double.valueOf(toView) ;
+                                if (check > 25){
+                                    Drawable draw = getResources().getDrawable(R.drawable.bg_hot);
+                                    constraintLayout.setBackground(draw);
+                                }
+                                else if (check < 25 | check > 5) {
+                                    Drawable draw = getResources().getDrawable(R.drawable.bg_neutral);
+                                    constraintLayout.setBackground(draw);
+                                }
+                                if (check < 5){
+                                    Drawable draw = getResources().getDrawable(R.drawable.bg_cold);
+                                    constraintLayout.setBackground(draw);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            };
+
+
+                            Runnable runnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    WeatherDB db = Room.databaseBuilder(getApplicationContext(),
+                                            WeatherDB.class, "populus-database").build();
+
+                                    WeatherRoom model = new WeatherRoom();
+                                    model.setWeatherToDB(32);                     // здесь брать погоду из респонса
+                                    model.setDescriptionOfWeatherToDB("Ясно");
+                                    //db.getDataDao().insertWeather(model);      //добавить в бд
+                                    //db.getDataDao().deleteWeather(model);        // удалить из бд
+                                    Log.d("this_is_tag", String.valueOf(new Gson().toJson(db.getDataDao().getAllWeather())));
+                                }
+
+                                };
+                            Thread thread = new Thread(runnable);               // предполагаю, что каждый раз создаётся новый поток
+                            thread.start();
+
+                            }
+                            @Override
+                        public void onFailure(Call<AllWeather> call, Throwable t) {
+                            Log.d(getClass().toString(), t.getMessage());
+                            Log.d("this_is_tag", "Ошибка");
+                        }
+
+                    });
+
                 }
+
             }
+
         });
+        /////////////////////////////////////////////////////////////////////////////////////////кнопки закончились
+
+
+
     }
 
 
-    private class GetWeather extends AsyncTask<String, String, String>{
-
-        protected void onPreExecute() {
-            super.onPreExecute();
-            resultWeather.setTextSize(24);
-            resultWeather.setText("Получение данных");
-
-        }
-        @Override
-        protected String doInBackground(String... strings) {
-            HttpURLConnection connect = null;
-            BufferedReader reader = null;
-            try {
-                URL url = new URL(strings[0]);
-                connect = (HttpURLConnection) url.openConnection();
-                connect.connect();
-
-                InputStream stream = connect.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-
-                StringBuffer buffer = new StringBuffer();
-                String text = null;
-                while((text = reader.readLine())!= null)
-                    buffer.append(text).append("\n");
-                return buffer.toString();
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e){
-                e.printStackTrace();
-            } finally {
-                if(connect != null){
-                    connect.disconnect();
-                }
-                try {
-                if(reader != null){
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            return null;
-            }
-
-            @SuppressLint("SetTextI18n")
-            @Override
-            protected void onPostExecute(String result) {
-                super.onPostExecute(result);
-
-                try {
-                    JSONObject jsonText = new JSONObject(result);       //здесь нужно будет достать больше данных
-                    String weather = (("" + jsonText.getJSONObject("main").getDouble("temp")).substring(0, 2));
-                    String description = jsonText.getJSONArray("weather").getString(0);
-                    int fromDesk1 = description.indexOf("description");
-                    int fromDesk2 = description.indexOf("icon");
-                    description = description.substring(fromDesk1 + 14,fromDesk2 - 3);
-                    double check = jsonText.getJSONObject("main").getDouble("temp");
-
-                    if (weather.substring(0,1) != "-"){
-                        weather = "+" + weather;
-                    }
-                    resultWeather.setText(weather);
-                    resultWeather.setTextSize(100);
-                    DeskWeather.setText(description);
-                    button.setVisibility(View.VISIBLE);
-                    buttonForMore.setVisibility(View.VISIBLE);
-                    if (check > 25){
-                        Drawable draw = getResources().getDrawable(R.drawable.bg_hot);
-                        constraintLayout.setBackground(draw);
-                    }
-                    else if (check < 25 | check > 5) {
-                        Drawable draw = getResources().getDrawable(R.drawable.bg_neutral);
-                        constraintLayout.setBackground(draw);
-                    }
-                    if (check < 5){
-                        Drawable draw = getResources().getDrawable(R.drawable.bg_cold);
-                        constraintLayout.setBackground(draw);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
 
 
-            }
-        }
-    public void onClick(View view) {
-        Intent intent = new Intent(this, ClothesActivity.class);    //кнопка переключения на активити с одеждой
-        CharSequence weather = resultWeather.getText();
-        intent.putExtra("weather", weather);
-        startActivity(intent);
-    }
+}
 
-};
+
+
+
 
 
 

@@ -16,6 +16,7 @@ import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 
 public interface RetrofitService {
@@ -26,8 +27,7 @@ public interface RetrofitService {
 
     @GET("weather?q=Perm&lang=ru&units=metric&appid=ea6f0e578383b90c05d2a363c4e39c3e") // добавить пользовательский ввод города
     Call<AllWeather> weather(
-            //@Query("city") String city           //паф почему-то пока не работает
-            //@Path("api") String api
+            //@Path("id") String city
     );
 
     @GET("users?page=2")

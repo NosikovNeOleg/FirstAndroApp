@@ -21,10 +21,11 @@ public class ClothesActivity extends MainActivity  {
         temp = findViewById(R.id.temp);
         clothes = findViewById(R.id.clothes);
         ClothesLayout = findViewById(R.id.ClothesLayout);
+
         if(arguments != null){
             String weather_to_show = arguments.get("weather").toString();
             temp.setText(weather_to_show);
-            int temperature = new Integer(weather_to_show);
+            double temperature = new Integer(weather_to_show.substring(1,weather_to_show.length()));
             clothes.setVisibility(View.VISIBLE);
             if (temperature >= 25){
                 clothes.setText("Сегодня очень жарко, желательно надеть что-то легкое и светлых тонов");

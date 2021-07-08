@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AboutMeActvity"
+    tools:context=".AboutMeActivity"
     android:background="@drawable/main_bg">
 
     <TextView
@@ -13,7 +13,7 @@
         android:layout_height="266dp"
         android:layout_marginTop="80dp"
         android:text="@string/AboutMe"
-        android:textSize="25dp"
+        android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
