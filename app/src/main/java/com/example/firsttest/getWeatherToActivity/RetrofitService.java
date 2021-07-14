@@ -1,4 +1,4 @@
-package com.example.firsttest;
+package com.example.firsttest.getWeatherToActivity;
 
 import com.example.firsttest.RetrofitForWeather.AllWeather;
 import com.example.firsttest.RetrofitTaskTwo.AddUserName;
@@ -17,19 +17,22 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 
 public interface RetrofitService {
 
-    /*
-     * https://api.openweathermap.org/data/2.5/weather?q=Perm&lang=ru&units=metric&appid=ea6f0e578383b90c05d2a363c4e39c3e
-     * */
 
-    @GET("weather?q=Perm&lang=ru&units=metric&appid=ea6f0e578383b90c05d2a363c4e39c3e") // добавить пользовательский ввод города
+    @GET("weather?")
     Call<AllWeather> weather(
-            //@Path("id") String city
+            //@Query("city") String city,
+            @Query("q") String city,
+            @Query("lang") String lang,
+            @Query("units") String units,
+            @Query("appid") String api
     );
 
+    // для домашнего задания
     @GET("users?page=2")
     Call<Users> getListUsers();
 

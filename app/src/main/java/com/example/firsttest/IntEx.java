@@ -15,7 +15,7 @@ public class IntEx implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        Log.d("this_is_tag", request.toString());
+        //Log.d("this_is_tag", request.toString());
         return chain.proceed(request);
     }
 }

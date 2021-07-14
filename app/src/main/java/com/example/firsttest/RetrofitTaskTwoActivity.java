@@ -15,6 +15,7 @@ import com.example.firsttest.RetrofitTaskTwo.UnoResource;
 import com.example.firsttest.RetrofitTaskTwo.UpdateInfo;
 import com.example.firsttest.RetrofitTaskTwo.User;
 import com.example.firsttest.RetrofitTaskTwo.Users;
+import com.example.firsttest.getWeatherToActivity.RetrofitService;
 import com.google.gson.Gson;
 
 import okhttp3.OkHttpClient;

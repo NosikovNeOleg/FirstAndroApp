@@ -15,7 +15,7 @@
         android:theme="@style/Theme.FirstTest">
 
         <service
-            android:name=".RetrofitService"
+            android:name=".getWeatherToActivity.RetrofitService"
             android:enabled="true"
             android:exported="true" />
 

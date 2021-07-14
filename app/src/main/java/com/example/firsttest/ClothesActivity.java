@@ -25,29 +25,29 @@ public class ClothesActivity extends MainActivity  {
         if(arguments != null){
             String weather_to_show = arguments.get("weather").toString();
             temp.setText(weather_to_show);
-            double temperature = new Integer(weather_to_show.substring(1,weather_to_show.length()));
+            double temperature = new Integer(weather_to_show);
             clothes.setVisibility(View.VISIBLE);
             if (temperature >= 25){
                 clothes.setText("Сегодня очень жарко, желательно надеть что-то легкое и светлых тонов");
                 Drawable draw = getResources().getDrawable(R.drawable.bg_hot);
                 ClothesLayout.setBackground(draw);
             }
-            else if (temperature < 25 | temperature >= 18){
+            else if (temperature < 25 && temperature >= 18){
                 clothes.setText("Сегодня жарковато, можно надеть футболку и легкие штаны");
                 Drawable draw = getResources().getDrawable(R.drawable.bg_neutral);
                 ClothesLayout.setBackground(draw);
             }
-            else if (temperature < 18 | temperature >= 5){
+            else if (temperature < 18 && temperature >= 5){
                 clothes.setText("Комфортная температура, чтобы надеть ветровку или кофту");
                 Drawable draw = getResources().getDrawable(R.drawable.bg_neutral);
                 ClothesLayout.setBackground(draw);
             }
-            else if (temperature < 5 | temperature >= -5){
+            else if (temperature < 5 && temperature >= -5){
                 clothes.setText("Сегодня можно надеть пальто или демисезонную куртку");
                 Drawable draw = getResources().getDrawable(R.drawable.bg_cold);
                 ClothesLayout.setBackground(draw);
             }
-            else if (temperature < -5 | temperature >= -15){
+            else if (temperature < -5 && temperature >= -15){
                 clothes.setText("Холодновато, можете надеть вашу лучшую куртку, также не забудьте шапку!");
                 Drawable draw = getResources().getDrawable(R.drawable.bg_cold);
                 ClothesLayout.setBackground(draw);

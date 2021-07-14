@@ -10,6 +10,7 @@
 
 
     <Button
+        android:visibility="invisible"
         android:id="@+id/buttonHomeTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,9 +45,11 @@
         android:visibility="invisible"
         app:backgroundTint="#00FFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/buttonForMore"
-        app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toStartOf="@+id/buttonForMore" />
+        app:layout_constraintEnd_toEndOf="@+id/resultWeather"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="@+id/resultWeather"
+        app:layout_constraintTop_toBottomOf="@+id/DeskWeather"
+        app:layout_constraintVertical_bias="0.654" />
 
     <EditText
         android:id="@+id/editTextTextCity"
@@ -79,13 +82,14 @@
         app:layout_constraintStart_toStartOf="@+id/editTextTextCity"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextCity" />
 
+
     <TextView
         android:id="@+id/resultWeather"
         android:layout_width="255dp"
         android:layout_height="189dp"
         android:layout_marginStart="96dp"
         android:layout_marginLeft="96dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="28dp"
         android:gravity="center|center_horizontal"
         android:text=""
         android:textAlignment="center"
@@ -99,17 +103,14 @@
         android:id="@+id/DeskWeather"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="60dp"
         android:gravity="center|center_horizontal"
         android:text=""
         android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonForMore"
         app:layout_constraintEnd_toEndOf="@+id/resultWeather"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="@+id/resultWeather"
-        app:layout_constraintTop_toBottomOf="@+id/resultWeather"
-        app:layout_constraintVertical_bias="0.0" />
-
+        app:layout_constraintTop_toBottomOf="@+id/resultWeather" />
 
     <com.example.firsttest.CustomView.CustomViewFreeDots
         android:id="@+id/AboutMe"
@@ -125,19 +126,7 @@
 
     </com.example.firsttest.CustomView.CustomViewFreeDots>
 
-    <Button
-        android:id="@+id/buttonForMore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:text="@string/more"
-        android:textColor="@color/black"
-        android:visibility="invisible"
-        app:backgroundTint="#00FFFF"
-        app:layout_constraintBottom_toTopOf="@+id/buttonForClothes"
-        app:layout_constraintEnd_toEndOf="@+id/resultWeather"
-        app:layout_constraintHorizontal_bias="0.482"
-        app:layout_constraintStart_toStartOf="@+id/resultWeather" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
