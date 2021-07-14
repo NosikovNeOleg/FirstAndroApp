@@ -19,6 +19,7 @@
     <string name="eight">PUT UPDATE</string>
     <string name="nine">PATCH UPDATE</string>
     <string name="ten">DELETE LIST USERS</string>
+    <string name="bg_hot">bg_hot</string>
 
 
 </resources>

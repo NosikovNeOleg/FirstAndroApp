@@ -120,35 +120,11 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
                     String city = editTextTextCity.getText().toString();
-                    new GetAndSetWeather(resultWeather, DeskWeather,city);
+                    new GetAndSetWeather(resultWeather, DeskWeather, constraintLayout, city);
                     buttonForClothes.setVisibility(View.VISIBLE);
-                    Log.d("this_is_tag", resultWeather.getText().toString());
-                        }
+                }
 
-                    }
-
-
-
-                    /*2                                                     переключение тем пока сломалось
-                    String test = String.valueOf(resultWeather.getText());
-                    int check = Integer.valueOf((String) test);
-                    if (resultWeather.getText().subSequence(0,1) != "-"){
-                        resultWeather.setText("+" + resultWeather.getText());
-                    }
-
-                    if (check > 25){
-                        Drawable draw = getResources().getDrawable(R.drawable.bg_hot);
-                        constraintLayout.setBackground(draw);
-                    }
-                    else if (check < 25 && check > 5) {
-                        Drawable draw = getResources().getDrawable(R.drawable.bg_neutral);
-                        constraintLayout.setBackground(draw);
-                    }
-                    if (check < 5){
-                        Drawable draw = getResources().getDrawable(R.drawable.bg_cold);
-                        constraintLayout.setBackground(draw);
-                    }
-*/
+            }
 
 /*          База данных
                             Runnable runnable = new Runnable() {
@@ -171,11 +147,9 @@ public class MainActivity extends AppCompatActivity {
 */
             });
 
-                    };
+                    }
 
                 }
-
-        /////////////////////////////////////////////////////////////////////////////////////////кнопки закончились
 
 
 
